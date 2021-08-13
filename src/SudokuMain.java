@@ -90,17 +90,39 @@ public class SudokuMain {
         @Override
         public void actionPerformed(ActionEvent e) {
 
+            int x = 0;
+            int y = 0;
+
+            JButton buttonAction;
+            String buttonValue = "";
+
             for (int i = 0; i < 9; i++) {
                 for (int j = 0; j < 9; j++) {
 
                     if (e.getSource() == listButtons.get(i).get(j)) {
+                        buttonAction = listButtons.get(i).get(j);
+                        buttonValue = listButtons.get(i).get(j).getText();
                         listButtons.get(i).get(j).setBackground(Color.MAGENTA);
+                        x = j;
+                        y = i;
                     } else {
                         listButtons.get(i).get(j).setBackground(Color.WHITE);
                     }
                 }
             }
 
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 9; j++) {
+
+                    if (listButtons.get(i).get(j).getText() == buttonValue)
+                        listButtons.get(i).get(j).setBackground(Color.BLUE);
+
+                    if (i == y)
+                        listButtons.get(i).get(j).setBackground(Color.GRAY);
+                    if (j == x)
+                        listButtons.get(i).get(j).setBackground(Color.GRAY);
+                }
+            }
 //            for (int i = 0; i < listButtons.size(); i++) {
 //                int counter = 1;
 //
