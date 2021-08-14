@@ -2,28 +2,28 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class SudokuMain {
+
+    int gameSize = 9;
 
     JFrame frameMain;
     JPanel panelGameField;
     Box bottomBox;
 
-    JLabel labelCentral;
-
     JButton buttonNewGame;
 
     ArrayList<ArrayList<JButton>> listButtons;
+    ArrayList<ArrayList<String>> listButtonNames;
     ArrayList<JButton> listNumberButtons;
 
     public static void main(String[] args) {
 
         SudokuMain gameManager = new SudokuMain();
         gameManager.buildGui();
-        gameManager.buildSudoku();
+        gameManager.generateSudoku();
     }
 
     public void buildGui() {
@@ -33,8 +33,6 @@ public class SudokuMain {
         panelGameField = new JPanel(layoutGrid);
 
         buttonNewGame = new JButton("New Game");
-
-        labelCentral = new JLabel("LOL");
 
         listButtons = new ArrayList<ArrayList<JButton>>();
         listNumberButtons = new ArrayList<JButton>();
@@ -49,7 +47,7 @@ public class SudokuMain {
             ArrayList<JButton> list = new ArrayList<JButton>();
 
             for (int j = 0; j < 9; j++) {
-                JButton btn = new JButton(/*Integer.toString((int) (Math.random() * 9) + 1)*/);
+                JButton btn = new JButton();
                 btn.setBorderPainted(false);
                 btn.setBackground(Color.WHITE);
                 btn.setFocusPainted(false);
@@ -65,7 +63,6 @@ public class SudokuMain {
             btn.setBorderPainted(false);
             btn.setBackground(Color.WHITE);
             btn.setFocusPainted(false);
-//            btn.setSelected(true);
             btn.setSize(50, 200);
             listNumberButtons.add(btn);
             bottomBox.add(btn);
@@ -86,14 +83,53 @@ public class SudokuMain {
         frameMain.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    public void buildSudoku() {
+    public void generateSudoku() {
 
-        int counter = 1;
+        String randomValue;
+
+        listButtonNames = new ArrayList<ArrayList<String>>();
+
+        for (int i = 0; i < 9; i++) {
+            ArrayList<String> stringArrayList = new ArrayList<String>();
+
+            for (int j = 0; j < 9; j++) {
+
+                randomValue = Integer.toString(j + 1/*(int) (Math.random() * 9) + 1*/);
+                stringArrayList.add(randomValue);
+            }
+            listButtonNames.add(stringArrayList);
+        }
+
+//        for (int i = 0; i < 9; i++)
+//            Collections.swap(listButtonNames.get(0), i, (int) (Math.random() * 9));
 
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                listButtons.get(i).get(j).setText(Integer.toString((int) (Math.random() * 9) + 1));
+                Collections.swap(listButtonNames.get(i), j, (int) (Math.random() * 9));
+
+                if (i != 0) {
+
+                    for (int k = 0; k < i; k++) {
+                        if (listButtonNames.get(k).indexOf(listButtonNames.get(i).get(j))
+                                == listButtonNames.get(i).indexOf(listButtonNames.get(k).get(j))) {
+                            j--;
+                            break;
+                        }
+                    }
+                }
             }
+        }
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                listButtons.get(i).get(j).setText(listButtonNames.get(i).get(j));
+            }
+        }
+    }
+
+    public void paintBackgroundDefault() {
+        for (ArrayList<JButton> list : listButtons) {
+            list.forEach(jButton -> jButton.setBackground(Color.white));
         }
     }
 
@@ -138,34 +174,8 @@ public class SudokuMain {
     public class ButtonNewGameListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            buildSudoku();
-        }
-    }
-
-    public class LabelCentralListener implements MouseListener {
-        @Override
-        public void mousePressed(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-
+            generateSudoku();
+            paintBackgroundDefault();
         }
     }
 }
